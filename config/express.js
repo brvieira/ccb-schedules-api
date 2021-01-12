@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 
 const server = express();
 
-server.use(cors);
+server.use(cors());
 server.use(bodyParser.json());
 
 module.exports = server;

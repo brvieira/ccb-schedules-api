@@ -11,7 +11,7 @@ const port = process.env.PORT;
 
 const conn = require("./config/mongodb");
 
-conn.then((db) => {
-  console.log(db);
+conn.then(async (db) => {
+  require("./api")(db, server);
   server.listen(port, () => logger.info(`Server running on ${port}`));
 });
