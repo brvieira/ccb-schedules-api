@@ -3,13 +3,13 @@
 const express = require("express");
 const router = express.Router();
 
-function services(db) {
-  const servicesController = require("../controllers/services")(db);
+function lane(db) {
+  const laneController = require("../controllers/lane")(db);
 
   router.post("/", async (req, res) => {
     try {
       const { body } = req;
-      const data = await servicesController.createService(body);
+      const data = await laneController.createNumberToService(body);
       res.send(data);
     } catch (error) {
       res.sendStatus(500);
@@ -78,4 +78,4 @@ function services(db) {
   return router;
 }
 
-module.exports = services;
+module.exports = lane;

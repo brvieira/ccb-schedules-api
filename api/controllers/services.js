@@ -7,7 +7,7 @@ const services = (db) => {
 
   const listAllServices = async () => {
     try {
-      const data = await collection.find({}).toArray();
+      const data = await collection.find({}).sort({ data: 1 }).toArray();
       return data;
     } catch (error) {
       throw error;
@@ -18,6 +18,36 @@ const services = (db) => {
     try {
       const data = await collection.find({ _id: ObjectId(id) }).toArray();
       return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const getServiceByType = async (type) => {
+    try {
+      const data = await collection
+        .find({ tipo_servico: type })
+        .sort({ data: 1 })
+        .toArray();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const getServiceAvailableByType = async (type) => {
+    try {
+      const data = await collection
+        .find({ tipo_servico: type })
+        .sort({ data: 1 })
+        .toArray();
+
+      const service = data.find(
+        (serv) =>
+          serv.senhas_irmaos.length < serv.irmaos ||
+          serv.senhas_irmas < serv.irmas
+      );
+      return service;
     } catch (error) {
       throw error;
     }
@@ -66,6 +96,8 @@ const services = (db) => {
     createService,
     deleteService,
     updateService,
+    getServiceByType,
+    getServiceAvailableByType,
   };
 };
 
