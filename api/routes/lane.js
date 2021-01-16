@@ -65,10 +65,10 @@ function lane(db) {
     }
   });
 
-  router.delete("/:id", async (req, res) => {
+  router.delete("/number/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      const data = await servicesController.deleteService(id);
+      const data = await laneController.deleteNumberToService(id);
       res.send(data);
     } catch (error) {
       res.sendStatus(500);

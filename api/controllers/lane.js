@@ -35,6 +35,43 @@ const services = (db) => {
     }
   };
 
+  const getNumbersCountByService = async (serviceId) => {
+    try {
+      if (typeof serviceId !== "string") serviceId = serviceId.toString();
+
+      const pipeline = [
+        {
+          $match: {
+            culto_id: serviceId,
+          },
+        },
+        {
+          $group: {
+            _id: "$tipo",
+            count: {
+              $sum: 1,
+            },
+          },
+        },
+      ];
+
+      const data = await collection.aggregate(pipeline).toArray();
+
+      let result = {
+        culto_id: serviceId,
+      };
+
+      data.map((tipo) => {
+        result[tipo._id] = tipo.count;
+      });
+
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
   const createNumberToService = async (body) => {
     try {
       const number = await getValueForNextSequence("senha");
@@ -70,7 +107,8 @@ const services = (db) => {
 
   const deleteNumberToService = async (number) => {
     try {
-      const data = await collection.deleteOne({ senha: number });
+      if (typeof number !== "number") number = parseInt(number);
+      const data = await collection.deleteMany({ senha: number });
       return data;
     } catch (error) {
       throw error;
@@ -107,6 +145,8 @@ const services = (db) => {
 
   return {
     createNumberToService,
+    getNumbersCountByService,
+    deleteNumberToService,
   };
 };
 
