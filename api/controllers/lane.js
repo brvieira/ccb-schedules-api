@@ -1,7 +1,5 @@
 "use strict";
 
-const { ObjectId, BSONType } = require("mongodb");
-
 const services = (db) => {
   const collection = db.collection("lane");
 
@@ -16,7 +14,9 @@ const services = (db) => {
 
   const getNumbers = async (number) => {
     try {
+      if (typeof number !== "number") number = parseInt(number);
       const data = await collection.find({ senha: number }).toArray();
+
       return data;
     } catch (error) {
       throw error;
@@ -115,6 +115,17 @@ const services = (db) => {
     }
   };
 
+  const deleteAndCreateNew = async (body) => {
+    try {
+      const oldDeleted = await deleteNumberToService(body.oldNumber);
+      const newNumber = await createNumberToService(body.newData);
+
+      return newNumber;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const getValueForNextSequence = async (sequenceName) => {
     try {
       const sequenceDoc = await db
@@ -147,6 +158,8 @@ const services = (db) => {
     createNumberToService,
     getNumbersCountByService,
     deleteNumberToService,
+    getNumbers,
+    deleteAndCreateNew,
   };
 };
 
