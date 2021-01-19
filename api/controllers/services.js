@@ -41,7 +41,7 @@ const services = (db) => {
       const data = await collection
         .find({
           data: {
-            $gt: getDate(new Date()),
+            $gte: getDate(new Date()),
           },
           tipo_servico: type,
         })
@@ -92,6 +92,24 @@ const services = (db) => {
     }
   };
 
+  const getNextServiceByType = async (type) => {
+    try {
+      const data = await collection
+        .find({
+          data: {
+            $gte: getDate(new Date()),
+          },
+          tipo_servico: type,
+        })
+        .sort({ data: 1 })
+        .toArray();
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const updateService = async (body) => {
     try {
       const filter = { _id: ObjectId(body._id) };
@@ -128,6 +146,7 @@ const services = (db) => {
     updateService,
     getServiceByType,
     getServiceAvailableByType,
+    getNextServiceByType,
   };
 };
 

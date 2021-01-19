@@ -23,12 +23,13 @@ const services = (db) => {
     }
   };
 
-  const getNumberByService = async (serviceId) => {
+  const getLaneByServiceAndType = async (id, type) => {
     try {
-      const data = await collection
-        .find({ culto_id: serviceId })
-        .sort({ senha: 1 })
-        .toArray();
+      const filter = {
+        culto_id: id,
+        tipo: type,
+      };
+      const data = await collection.find(filter).sort({ senha: 1 }).toArray();
       return data;
     } catch (error) {
       throw error;
@@ -160,6 +161,7 @@ const services = (db) => {
     deleteNumberToService,
     getNumbers,
     deleteAndCreateNew,
+    getLaneByServiceAndType,
   };
 };
 

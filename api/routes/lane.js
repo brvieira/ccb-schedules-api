@@ -17,15 +17,6 @@ function lane(db) {
     }
   });
 
-  router.get("/", async (req, res) => {
-    try {
-      const data = await servicesController.listAllServices();
-      res.send(data);
-    } catch (error) {
-      res.sendStatus(500);
-    }
-  });
-
   router.get("/number/:number", async (req, res) => {
     try {
       const { number } = req.params;
@@ -57,30 +48,10 @@ function lane(db) {
     }
   });
 
-  router.get("/type/:type", async (req, res) => {
+  router.get("/service/:id/:type", async (req, res) => {
     try {
-      const { type } = req.params;
-      const data = await servicesController.getServiceByType(type);
-      res.send(data);
-    } catch (error) {
-      res.sendStatus(500);
-    }
-  });
-
-  router.get("/available/:type", async (req, res) => {
-    try {
-      const { type } = req.params;
-      const data = await servicesController.getServiceAvailableByType(type);
-      res.send(data);
-    } catch (error) {
-      res.sendStatus(500);
-    }
-  });
-
-  router.put("/", async (req, res) => {
-    try {
-      const { body } = req;
-      const data = await servicesController.updateService(body);
+      const { id, type } = req.params;
+      const data = await laneController.getLaneByServiceAndType(id, type);
       res.send(data);
     } catch (error) {
       res.sendStatus(500);

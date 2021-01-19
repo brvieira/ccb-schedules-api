@@ -55,6 +55,16 @@ function services(db) {
     }
   });
 
+  router.get("/next/:type", async (req, res) => {
+    try {
+      const { type } = req.params;
+      const data = await servicesController.getNextServiceByType(type);
+      res.send(data);
+    } catch (error) {
+      res.sendStatus(500);
+    }
+  });
+
   router.put("/", async (req, res) => {
     try {
       const { body } = req;
