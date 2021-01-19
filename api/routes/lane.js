@@ -79,6 +79,17 @@ function lane(db) {
     }
   });
 
+  router.put("/number", async (req, res) => {
+    try {
+      const { body } = req;
+      const data = await laneController.updateNumbers(body);
+      res.send(data);
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  });
+
   return router;
 }
 

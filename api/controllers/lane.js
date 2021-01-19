@@ -155,6 +155,29 @@ const services = (db) => {
     return arr;
   };
 
+  const updateNumbers = async (data) => {
+    try {
+      const filter = {
+        _id: {
+          $in: [...data.ids],
+        },
+      };
+
+      let item = {};
+      item[data.field] = data.value;
+
+      const update = {
+        $set: item,
+      };
+
+      const result = await collection.updateMany(filter, update);
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   return {
     createNumberToService,
     getNumbersCountByService,
@@ -162,6 +185,7 @@ const services = (db) => {
     getNumbers,
     deleteAndCreateNew,
     getLaneByServiceAndType,
+    updateNumbers,
   };
 };
 

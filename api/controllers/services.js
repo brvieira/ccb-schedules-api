@@ -8,7 +8,10 @@ const services = (db) => {
 
   const listAllServices = async () => {
     try {
-      const data = await collection.find({}).sort({ data: 1 }).toArray();
+      const data = await collection
+        .find({})
+        .sort({ data_timestamp: 1 })
+        .toArray();
       return data;
     } catch (error) {
       throw error;
@@ -28,7 +31,7 @@ const services = (db) => {
     try {
       const data = await collection
         .find({ tipo_servico: type })
-        .sort({ data: 1 })
+        .sort({ data_timestamp: 1 })
         .toArray();
       return data;
     } catch (error) {
@@ -40,12 +43,12 @@ const services = (db) => {
     try {
       const data = await collection
         .find({
-          data: {
-            $gte: getDate(new Date()),
+          data_timestamp: {
+            $gte: convertDateToTimestamp(),
           },
           tipo_servico: type,
         })
-        .sort({ data: 1 })
+        .sort({ data_timestamp: 1 })
         .toArray();
 
       let availService = {};
@@ -83,6 +86,20 @@ const services = (db) => {
     return `${convDat}/${convMonth}/${year}`;
   };
 
+  const convertDateToTimestamp = () => {
+    const date = new Date();
+    const day = date.getDate(),
+      month = date.getMonth() + 1,
+      year = date.getYear() + 1900,
+      convDat = day < 10 ? `0${day}` : day,
+      convMonth = month < 10 ? `0${month}` : month;
+
+    const dateStr = `${year}/${convMonth}/${convDat}`;
+    const dateTsObj = new Date(dateStr).getTime();
+
+    return dateTsObj;
+  };
+
   const createService = async (body) => {
     try {
       const data = await collection.insertOne(body);
@@ -96,12 +113,12 @@ const services = (db) => {
     try {
       const data = await collection
         .find({
-          data: {
-            $gte: getDate(new Date()),
+          data_timestamp: {
+            $gte: convertDateToTimestamp(),
           },
           tipo_servico: type,
         })
-        .sort({ data: 1 })
+        .sort({ data_timestamp: 1 })
         .toArray();
 
       return data;
