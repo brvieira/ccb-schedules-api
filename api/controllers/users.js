@@ -25,10 +25,17 @@ module.exports = (db) => {
   };
 
   const editUser = async (data) => {
-    delete data._id;
     try {
       const saltRounds = 8;
-      data.senha = await bcrypt.hash(data.senha, saltRounds);
+      const senha = await bcrypt.hash(data.senha, saltRounds);
+      const filter = {
+        _id: data._id,
+      };
+      const update = {
+        $set: {
+          senha: senha,
+        },
+      };
     } catch (error) {
       console.error("Erro ao gerar hash");
     } finally {
