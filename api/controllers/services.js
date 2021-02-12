@@ -41,12 +41,24 @@ const services = (db) => {
 
   const getServiceAvailableByType = async (type) => {
     try {
+      const queryDate = { ...getQueryDate() };
       const data = await collection
         .find({
-          data_timestamp: {
-            $gte: convertDateToTimestamp(),
-          },
-          tipo_servico: type,
+          $and: [
+            {
+              data_timestamp: {
+                $gte: queryDate.initial,
+              },
+            },
+            {
+              data_timestamp: {
+                $lte: queryDate.final,
+              },
+            },
+            {
+              tipo_servico: type,
+            },
+          ],
         })
         .sort({ data_timestamp: 1 })
         .toArray();
@@ -87,17 +99,26 @@ const services = (db) => {
   };
 
   const convertDateToTimestamp = () => {
-    const date = new Date();
-    const day = date.getDate(),
-      month = date.getMonth() + 1,
-      year = date.getYear() + 1900,
-      convDat = day < 10 ? `0${day}` : day,
-      convMonth = month < 10 ? `0${month}` : month;
-
-    const dateStr = `${year}/${convMonth}/${convDat}`;
-    const dateTsObj = new Date(dateStr).getTime();
+    let date = new Date();
+    date.setHours(0, 0, 0, 0);
+    const dateTsObj = date.getTime();
 
     return dateTsObj;
+  };
+
+  const getQueryDate = () => {
+    let initialDateTime = new Date(),
+      initialTs = initialDateTime.getTime() - 1 * 60 * 60 * 1000;
+    initialDateTime.setTime(initialTs);
+
+    let finalDateTime = new Date(),
+      finalTs = finalDateTime.getTime() + 24 * 60 * 60 * 1000;
+    finalDateTime.setTime(finalTs);
+
+    return {
+      initial: initialDateTime.getTime(),
+      final: finalDateTime.getTime(),
+    };
   };
 
   const createService = async (body) => {
