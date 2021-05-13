@@ -8,6 +8,11 @@ const server = express();
 
 server.use(cors());
 server.use(bodyParser.json());
+server.use(
+  bodyParser.text({
+    type: "text/csv",
+  })
+);
 
 const path = require("path");
 const scriptName = path.basename(__filename);
